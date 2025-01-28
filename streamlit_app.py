@@ -1,10 +1,10 @@
 import streamlit as st
 import yt_dlp
 import os
+from pathlib import Path
 
-# Set up download folder
-DOWNLOAD_FOLDER = 'downloads'
-os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
+# Set up default Downloads folder
+DOWNLOAD_FOLDER = str(Path.home() / "Downloads")
 
 # Streamlit app UI
 st.title('YouTube Video Downloader')
@@ -15,7 +15,7 @@ if st.button('Download') and url:
     try:
         # Set up yt-dlp options
         ydl_opts = {
-            'outtmpl': f'{DOWNLOAD_FOLDER}/%(title)s.%(ext)s',
+            'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
             'format': 'best',
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -26,7 +26,7 @@ if st.button('Download') and url:
         video_path = os.path.join(DOWNLOAD_FOLDER, f"{video_title}.mp4")
 
         # Provide the download link
-        st.success(f'Video "{video_title}" downloaded successfully!')
+        st.success(f'Video "{video_title}" downloaded successfully to Downloads folder!')
         st.download_button(
             label="Download Video",
             data=open(video_path, 'rb').read(),
